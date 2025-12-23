@@ -43,9 +43,8 @@ async function loadTeam() {
   } else {
     robotNotesInput.value = snap.data().robotNotes || "";
   }
-  robotNotesInput.value = snap.data().robotNotes || "";
-  autoResizeTextarea(robotNotesInput); // adjust height on load
 
+  autoResizeTextarea(robotNotesInput); // adjust height on load
   loadMatches();
 }
 
@@ -67,8 +66,8 @@ async function loadMatches() {
   matchesDiv.innerHTML = "";
 
   const matches = [];
-  let autoSum = 0;
-  let teleopSum = 0;
+  let param1Sum = 0;
+  let param2Sum = 0;
 
   snap.forEach(d => matches.push(d.data()));
 
@@ -76,21 +75,22 @@ async function loadMatches() {
   matches.sort((a, b) => a.matchNumber - b.matchNumber);
 
   matches.forEach(m => {
-    autoSum += Number(m.autoScore);
-    teleopSum += Number(m.teleopScore);
+    param1Sum += Number(m.param1);
+    param2Sum += Number(m.param2);
 
     matchesDiv.innerHTML += `
       <div>
         <b>Match ${m.matchNumber}</b> —
-        Auto: ${m.autoScore},
-        Teleop: ${m.teleopScore}
+        Parameter 1: ${m.param1},
+        Parameter 2: ${m.param2}
         <br>${m.notes}
+        <p></p>
       </div>
     `;
   });
 
   if (matches.length > 0) {
-    averagesP.innerText = `Avg Auto: ${(autoSum/matches.length).toFixed(1)} | Avg Teleop: ${(teleopSum/matches.length).toFixed(1)}`;
+    averagesP.innerText = `Avg Parameter 1: ${(param1Sum/matches.length).toFixed(1)} | Avg Parameter 2: ${(param2Sum/matches.length).toFixed(1)}`;
   } else {
     averagesP.innerText = "";
   }
@@ -98,28 +98,33 @@ async function loadMatches() {
 
 // Add or overwrite match
 window.addMatch = async function () {
-  if (typeof(document.getElementById("matchNumber")) == "number" && typeof(document.getElementById("autoScore")) == "number" && typeof(document.getElementById("teleopScore")) == "number") {
-    const matchNumber = document.getElementById("matchNumber").value.trim();
-    if (!matchNumber) return;
+  const matchNumber = document.getElementById("matchNumber").value.trim();
+  const param1Val = document.getElementById("param1").value.trim();
+  const param2Val = document.getElementById("param2").value.trim();
 
-    const matchId = `${teamNumber}_${matchNumber}`;
-
-    await setDoc(doc(db, "matches", matchId), {
-      teamNumber,
-      matchNumber,
-      autoScore: Number(document.getElementById("autoScore").value),
-      teleopScore: Number(document.getElementById("teleopScore").value),
-      notes: document.getElementById("matchNotes").value
-    });
-
-    // Clear input fields after saving
-    document.getElementById("matchNumber").value = "";
-    document.getElementById("autoScore").value = "";
-    document.getElementById("teleopScore").value = "";
-    document.getElementById("matchNotes").value = "";
-
-    loadMatches();
+  // Validate inputs
+  if (!matchNumber || isNaN(param1Val) || isNaN(param2Val)) {
+    alert("Please enter a valid match number, param1, and param2");
+    return;
   }
+
+  const matchId = `${teamNumber}_${matchNumber}`;
+
+  await setDoc(doc(db, "matches", matchId), {
+    teamNumber,
+    matchNumber,
+    param1: Number(param1Val),
+    param2: Number(param2Val),
+    notes: document.getElementById("matchNotes").value
+  });
+
+  // Clear input fields after saving
+  document.getElementById("matchNumber").value = "";
+  document.getElementById("param1").value = "";
+  document.getElementById("param2").value = "";
+  document.getElementById("matchNotes").value = "";
+
+  loadMatches();
 };
 
 // Initialize
