@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title id = "teamTitle"></title>
+        <link rel="stylesheet" href="robotstyle.css">
+    </head>
+    <body>
+
+        <h1 id="teamHeader"></h1>
+
+        <h2 style="color: grey;">Robot Notes</h2>
+        <textarea id="robotNotes"></textarea>
+        <br>
+        <button onclick="saveRobotNotes()">Save Notes</button>
+
+        <h2 style="color: grey;">Matches</h2>
+        <div id="matches"></div>
+
+        <h2 style="color: grey;">Add Match</h2>
+        <input id="matchNumber" placeholder="Match #">
+        <input id="autoScore" placeholder="Auto Score">
+        <input id="teleopScore" placeholder="Teleop Score">
+        <input id="matchNotes" placeholder="Notes">
+        <button onclick="addMatch()">Add Match</button>
+
+        <p id="averages"></p>
+
+        <script type="module" src="js/team.js"></script>
+
+        <p></p>
+        <button onclick="window.location.href='index.html'">
+            Add a New Team
+        </button>
+    </body>
+</html>
