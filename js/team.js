@@ -68,6 +68,7 @@ async function loadMatches() {
   const matches = [];
   let param1Sum = 0;
   let param2Sum = 0;
+  let team = "red";
 
   snap.forEach(d => matches.push(d.data()));
 
@@ -77,10 +78,11 @@ async function loadMatches() {
   matches.forEach(m => {
     param1Sum += Number(m.param1);
     param2Sum += Number(m.param2);
+    team = m.team;
 
     matchesDiv.innerHTML += `
       <div>
-        <b>Match ${m.matchNumber}</b> —
+        <b style="color: ${m.team}">Match ${m.matchNumber}</b> —
         Parameter 1: ${m.param1},
         Parameter 2: ${m.param2}
         <br>${m.notes}
@@ -101,6 +103,7 @@ window.addMatch = async function () {
   const matchNumber = document.getElementById("matchNumber").value.trim();
   const param1Val = document.getElementById("param1").value.trim();
   const param2Val = document.getElementById("param2").value.trim();
+  const teamColor = document.getElementById("team").value;
 
   // Validate inputs
   if (!matchNumber || isNaN(param1Val) || isNaN(param2Val)) {
@@ -115,6 +118,7 @@ window.addMatch = async function () {
     matchNumber,
     param1: Number(param1Val),
     param2: Number(param2Val),
+    team: String(teamColor),
     notes: document.getElementById("matchNotes").value
   });
 
